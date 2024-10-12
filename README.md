@@ -3,10 +3,10 @@
 
 ## About me
 <p style="text-align: justify;">
-Xin chào các bạn, mình là Nguyễn Thành Lãnh, 23 tuổi. Hiện tại đang là một .net developer trong một công ty startup làm về ERP. 
+Xin chào các bạn, mình là Nguyễn Thành Lãnh, 23 tuổi. Hiện tại đang là một .net developer trong một công ty startup làm về ERP.<br>
 Với niềm yêu thích lập trình, mình luôn luôn học hỏi thêm những cái mới - hôm nay mình đang tìm hiểu về Dapper nên mình tạo ra repo
 này nhằm mục đích hệ thống lại những kiến thức của mình tiếp thu được và chia sẻ lại cho bạn đọc những gì mình biết, hi vọng có thể giúp 
-được các bạn phần nào.
+được các bạn phần nào.<br>
 Mình xin cảm ơn.
 </p>
 
