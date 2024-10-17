@@ -22,6 +22,13 @@ namespace WebApiDapper.Controllers
             return Ok(products);
         }
 
+        [HttpGet("page")]
+        public async Task<IActionResult> GetProductByPaging([FromQuery] int pageNumber, [FromQuery] int pageSize)
+        {
+            var products = await _productRepo.GetPaging(pageNumber, pageSize);
+            return Ok(products);
+        }
+
         [HttpGet("id")]
         public async Task<IActionResult> GetProductById(int id)
         {

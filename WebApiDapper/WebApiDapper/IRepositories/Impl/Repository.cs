@@ -61,6 +61,24 @@ namespace WebApiDapper.IRepositories.Impl
             }
         }
 
+        public async Task<List<T>> GetPaging(int pageNumber, int pageSize)
+        {
+            var offset = (pageNumber -1) * pageSize;
+
+            var query = $@"
+            SELECT * 
+            FROM {_tableName}
+            ORDER BY Id
+            OFFSET @Offset ROWS
+            FETCH NEXT @PageSize ROWS ONLY";
+
+            using (var connection = _dbContext.CreateConnection())
+            {
+                var result = await connection.QueryAsync<T>(query, new { Offset = offset, PageSize = pageSize });
+                return result.ToList();
+            }
+        }
+
         public async Task Update(T entity)
         {
             var updateQuery = GenerateUpdateQuery();

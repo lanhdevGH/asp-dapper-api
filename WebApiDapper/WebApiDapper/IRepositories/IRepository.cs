@@ -7,5 +7,6 @@
         public Task Add(T entity);
         public Task Update(T entity);
         public Task Delete(int id);
+        public Task<List<T>> GetPaging(int pageNumber, int pageSize);
     }
 }
