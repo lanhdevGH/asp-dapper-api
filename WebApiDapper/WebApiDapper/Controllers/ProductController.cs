@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using WebApiDapper.ActionFilters;
 using WebApiDapper.Entities;
 using WebApiDapper.IRepositories;
 using WebApiDapper.IRepositories.Impl;
@@ -30,9 +32,10 @@ namespace WebApiDapper.Controllers
         }
 
         [HttpGet("id")]
+        [ServiceFilter(typeof(ValidationNotExistEntityAttribute<Product>))]
         public async Task<IActionResult> GetProductById(int id)
         {
-            var product = await _productRepo.GetById(id);
+            var product = HttpContext.Items["Entity"] as Product;
             if (product == null)
             {
                 return NotFound();
@@ -41,6 +44,7 @@ namespace WebApiDapper.Controllers
         }
 
         [HttpPost]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreateProduct([FromBody] Product product)
         {
             await _productRepo.Add(product);
@@ -48,9 +52,11 @@ namespace WebApiDapper.Controllers
         }
 
         [HttpPut("id")]
+        [ServiceFilter(typeof(ValidationNotExistEntityAttribute<Product>))]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> UpdateProduct(int id, [FromBody] Product product)
         {
-            var existingProduct = await _productRepo.GetById(id);
+            var existingProduct = HttpContext.Items["Entity"] as Product;
             if (existingProduct == null)
                 return NotFound();
             existingProduct.Name = product.Name;
@@ -59,9 +65,11 @@ namespace WebApiDapper.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ServiceFilter(typeof(ValidationNotExistEntityAttribute<Product>))]
         public async Task<IActionResult> DeleteProduct(int id)
         {
-            await _productRepo.Delete(id);
+            var product = HttpContext.Items["Entity"] as Product;
+            await _productRepo.Delete(product.Id);
             return NoContent();
         }
     }

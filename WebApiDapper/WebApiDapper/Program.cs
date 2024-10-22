@@ -1,5 +1,8 @@
 using Microsoft.AspNetCore.HttpLogging;
+using Microsoft.AspNetCore.Mvc.Filters;
+using WebApiDapper.ActionFilters;
 using WebApiDapper.DbContext;
+using WebApiDapper.Entities;
 using WebApiDapper.IRepositories;
 using WebApiDapper.IRepositories.Impl;
 
@@ -15,7 +18,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<DapperDBContext>();
 // Add Repo
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-builder.Services.AddScoped<IProductRepository,ProductRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<ValidationFilterAttribute>();
+builder.Services.AddScoped<ValidationNotExistEntityAttribute<Product>>();
 
 var app = builder.Build();
 
