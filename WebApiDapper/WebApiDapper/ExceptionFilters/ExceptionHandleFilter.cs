@@ -13,7 +13,6 @@ namespace WebApiDapper.ExceptionFilters
             {
                 Message = context.Exception.Message,
                 StatusCode = StatusCodes.Status501NotImplemented,
-                StackTrace = context.Exception.StackTrace
             };
 
             context.Result = new ObjectResult(errorDetail) { StatusCode = StatusCodes.Status500InternalServerError };
