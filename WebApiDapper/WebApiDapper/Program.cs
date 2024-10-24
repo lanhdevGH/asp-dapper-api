@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using WebApiDapper.ActionFilters;
 using WebApiDapper.DbContext;
 using WebApiDapper.Entities;
+using WebApiDapper.ExceptionFilters;
 using WebApiDapper.IRepositories;
 using WebApiDapper.IRepositories.Impl;
 
@@ -21,6 +22,7 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ValidationFilterAttribute>();
 builder.Services.AddScoped<ValidationNotExistEntityAttribute<Product>>();
+builder.Services.AddScoped<ExceptionHandleFilter>();
 
 var app = builder.Build();
 

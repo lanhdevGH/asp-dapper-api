@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using WebApiDapper.ActionFilters;
 using WebApiDapper.Entities;
+using WebApiDapper.ExceptionFilters;
 using WebApiDapper.IRepositories;
 using WebApiDapper.IRepositories.Impl;
 
@@ -25,8 +26,10 @@ namespace WebApiDapper.Controllers
         }
 
         [HttpGet("page")]
+        [ExceptionHandleFilter]
         public async Task<IActionResult> GetProductByPaging([FromQuery] int pageNumber, [FromQuery] int pageSize)
         {
+            throw new NotImplementedException();
             var products = await _productRepo.GetPaging(pageNumber, pageSize);
             return Ok(products);
         }
