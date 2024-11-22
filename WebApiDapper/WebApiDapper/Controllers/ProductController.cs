@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
 using WebApiDapper.ActionFilters;
+using WebApiDapper.DTOs.ProductDTO;
 using WebApiDapper.Entities;
-using WebApiDapper.ExceptionFilters;
-using WebApiDapper.IRepositories;
-using WebApiDapper.IRepositories.Impl;
+using WebApiDapper.Services;
 
 namespace WebApiDapper.Controllers
 {
@@ -12,30 +10,29 @@ namespace WebApiDapper.Controllers
     [Route("[controller]")]
     public class ProductController : ControllerBase
     {
-        private readonly IProductRepository _productRepo;
-        public ProductController(IProductRepository productRepository)
+        private readonly ProductService _productService;
+        public ProductController(ProductService producService)
         {
-            _productRepo = productRepository;
+            _productService = producService;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllProduct()
         {
-            var products = await _productRepo.GetAll();
+            var products = await _productService.GetAllProductAsync();
             return Ok(products);
         }
 
-        [HttpGet("page")]
-        [ExceptionHandleFilter]
-        public async Task<IActionResult> GetProductByPaging([FromQuery] int pageNumber, [FromQuery] int pageSize)
-        {
-            throw new NotImplementedException();
-            var products = await _productRepo.GetPaging(pageNumber, pageSize);
-            return Ok(products);
-        }
+        //[HttpGet("page")]
+        //[ExceptionHandleFilter]
+        //public async Task<IActionResult> GetProductByPaging([FromQuery] int pageNumber, [FromQuery] int pageSize)
+        //{
+        //    var products = await _productRepo.GetPagingAsync(pageNumber, pageSize);
+        //    return Ok(products);
+        //}
 
         [HttpGet("id")]
-        [ServiceFilter(typeof(ValidationNotExistEntityAttribute<Product>))]
+        [ServiceFilter(typeof(ValidationNotExistEntityAttribute<Product, int>))]
         public async Task<IActionResult> GetProductById(int id)
         {
             var product = HttpContext.Items["Entity"] as Product;
@@ -47,32 +44,34 @@ namespace WebApiDapper.Controllers
         }
 
         [HttpPost]
+        [ServiceFilter(typeof(ValidationIsExistEntity<ProductCreateRequestDTO>))]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IActionResult> CreateProduct([FromBody] Product product)
+        public async Task<IActionResult> CreateProduct([FromBody] ProductCreateRequestDTO product)
         {
-            await _productRepo.Add(product);
-            return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, product);
+            var productId = await _productService.CreateProductAsync(product);
+            return CreatedAtAction(nameof(GetProductById), productId);
         }
 
         [HttpPut("id")]
-        [ServiceFilter(typeof(ValidationNotExistEntityAttribute<Product>))]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        public async Task<IActionResult> UpdateProduct(int id, [FromBody] Product product)
+        [ServiceFilter(typeof(ValidationNotExistEntityAttribute<Product, int>))]
+        public async Task<IActionResult> UpdateProduct(int id, [FromBody] ProductUpdateRequestDTO product)
         {
             var existingProduct = HttpContext.Items["Entity"] as Product;
             if (existingProduct == null)
                 return NotFound();
             existingProduct.Name = product.Name;
-            await _productRepo.Update(existingProduct);
+            existingProduct.CategoryId = null;
+            await _productService.UpdateProduct(existingProduct.Id, product);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        [ServiceFilter(typeof(ValidationNotExistEntityAttribute<Product>))]
+        [ServiceFilter(typeof(ValidationNotExistEntityAttribute<Product, int>))]
         public async Task<IActionResult> DeleteProduct(int id)
         {
             var product = HttpContext.Items["Entity"] as Product;
-            await _productRepo.Delete(product.Id);
+            await _productService.DeleteProductByIdAsync(product.Id);
             return NoContent();
         }
     }

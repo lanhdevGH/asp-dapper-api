@@ -33,7 +33,7 @@ namespace WebApiDapper.ConfigureExceptionHandler
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             await context.Response.WriteAsync(new ExceptionModel
             {
-                Message = "Internal Server Error from the custom middleware",
+                Message = exception.Message,
                 StatusCode = context.Response.StatusCode,
             }.ToString());
         }

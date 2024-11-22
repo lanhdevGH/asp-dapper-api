@@ -7,31 +7,28 @@ using WebApiDapper.IRepositories.Impl;
 
 namespace WebApiDapper.ActionFilters
 {
-    public class ValidationNotExistEntityAttribute<T> : IAsyncActionFilter where T : class
+    public class ValidationNotExistEntityAttribute<T, K> : IAsyncActionFilter where T : class
     {
-        private readonly IRepository<T> _repository;
-        public ValidationNotExistEntityAttribute(IRepository<T> repository)
+        private readonly IRepository<T, K> _repository;
+        public ValidationNotExistEntityAttribute(IRepository<T, K> repository)
         {
             _repository = repository;
         }
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            int id = 0;
-            if (context.ActionArguments.ContainsKey("id"))
+
+            if (!context.ActionArguments.TryGetValue("id", out var id) || id is not K entityId)
             {
-                id = (int)context.ActionArguments["id"];
-            }
-            else
-            {
-                context.Result = new BadRequestObjectResult("Bad id parameter");
+                context.Result = new BadRequestObjectResult("Invalid or missing 'id' parameter");
                 return;
             }
 
-            var entity = await _repository.GetById(id);
+            var entity = await _repository.GetByIdAsync(entityId);
             if (entity == null)
             {
                 context.Result = new NotFoundResult();
+                return;
             }
             else
             {

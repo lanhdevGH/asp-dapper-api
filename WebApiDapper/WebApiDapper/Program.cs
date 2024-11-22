@@ -1,7 +1,4 @@
-using Microsoft.AspNetCore.HttpLogging;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Serilog;
-using Serilog.Context;
 using Serilog.Formatting.Json;
 using WebApiDapper.ActionFilters;
 using WebApiDapper.DbContext;
@@ -9,6 +6,7 @@ using WebApiDapper.Entities;
 using WebApiDapper.ExceptionFilters;
 using WebApiDapper.IRepositories;
 using WebApiDapper.IRepositories.Impl;
+using WebApiDapper.Services;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console(new JsonFormatter())
@@ -27,11 +25,23 @@ try
     builder.Services.AddSwaggerGen();
     //
     builder.Services.AddSingleton<DapperDBContext>();
-    // Add Repo
-    builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-    builder.Services.AddScoped<IProductRepository, ProductRepository>();
+    // Add Repository
+    builder.Services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
+    builder.Services.AddScoped(typeof(IProductRepository<>), typeof(ProductRepository<>));
+    builder.Services.AddScoped(typeof(IExtendAttributeRepository<>), typeof(ExtendAttributeRepository<>));
+    builder.Services.AddScoped(typeof(IAttributeValueNVarcharRepository<>), typeof(AttributeValueNVarcharRepository<>));
+    builder.Services.AddScoped(typeof(IAttributeValueTextRepository<>), typeof(AttributeValueTextRepository<>));
+    builder.Services.AddScoped(typeof(IAttributeValueIntRepository<>), typeof(AttributeValueIntRepository<>));
+    builder.Services.AddScoped(typeof(IAttributeValueDecimalRepository<>), typeof(AttributeValueDecimalRepository<>));
+    builder.Services.AddScoped(typeof(IAttributeValueDateTimeRepository<>), typeof(AttributeValueDateTimeRepository<>));
+    // Add service
+    builder.Services.AddScoped<ProductService>();
+    builder.Services.AddScoped(typeof(ExtendAttributeService<>));
+
+    //
     builder.Services.AddScoped<ValidationFilterAttribute>();
-    builder.Services.AddScoped<ValidationNotExistEntityAttribute<Product>>();
+    builder.Services.AddScoped(typeof(ValidationIsExistEntity<>));
+    builder.Services.AddScoped(typeof(ValidationNotExistEntityAttribute<,>));
     builder.Services.AddScoped<ExceptionHandleFilter>();
     builder.Host.UseSerilog((ctx, lg) => lg.WriteTo.Console());
 

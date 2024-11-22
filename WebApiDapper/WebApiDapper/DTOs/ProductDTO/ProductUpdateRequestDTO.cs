@@ -1,21 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using WebApiDapper.Contracts;
 
-namespace WebApiDapper.Entities
+namespace WebApiDapper.DTOs.ProductDTO
 {
-    [Table("Products")]
-    public class Product : IEntity
+    public class ProductUpdateRequestDTO
     {
-        public int Id { get; set; }
-
         [Required(ErrorMessage = "Name is require")]
         public string Name { get; set; } = "";
         public string Description { get; set; } = "";
         public string Content { get; set; } = "";
 
         [Required(ErrorMessage = "Sku is require")]
-        public string Sku {  get; set; }         
+        public string Sku { get; set; }
         public decimal Price { get; set; }
 
         public decimal? DiscountPrice { get; set; }
@@ -31,5 +26,6 @@ namespace WebApiDapper.Entities
         public int? CategoryId { get; set; } = null;
         public DateTime CreateDate { get; set; }
         public DateTime UpdateDate { get; set; }
+        public Dictionary<string, string>? ExtendAttributes { get; set; }
     }
 }
