@@ -8,7 +8,7 @@ using WebApiDapper.Entities;
 
 namespace WebApiDapper.IRepositories.Impl
 {
-    public class ProductRepository<K> : Repository<Product, K>, IProductRepository<K>
+    public class ProductRepository<K> : Repository<Product, K>, IProductRepository<K> where K : struct
     {
         public ProductRepository(DapperDBContext context) : base(context)
         {

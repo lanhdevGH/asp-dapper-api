@@ -33,7 +33,7 @@ namespace WebApiDapper.Controllers
 
         [HttpGet("id")]
         [ServiceFilter(typeof(ValidationNotExistEntityAttribute<Product, int>))]
-        public async Task<IActionResult> GetProductById(int id)
+        public IActionResult GetProductById(int id)
         {
             var product = HttpContext.Items["Entity"] as Product;
             if (product == null)
@@ -71,6 +71,7 @@ namespace WebApiDapper.Controllers
         public async Task<IActionResult> DeleteProduct(int id)
         {
             var product = HttpContext.Items["Entity"] as Product;
+            if (product == null) return NotFound();
             await _productService.DeleteProductByIdAsync(product.Id);
             return NoContent();
         }
