@@ -1,10 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using WebApiDapper.Contracts;
-
-namespace WebApiDapper.Entities
+﻿namespace WebApiDapper.DTOs.CategoryDTO
 {
-    [Table("Categories")]
-    public class Category : IEntity
+    public class CategoryResponseDTO
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -12,7 +8,7 @@ namespace WebApiDapper.Entities
         public string SeoTitle { get; set; } = "";
         public string SeoKeyword { get; set; } = "";
         public string SeoDescription { get; set; } = "";
-        public int ParentId { get; set; }
+        public CategoryResponseDTO? ParentId { get; set; } = null;
         public bool IsActive { get; set; } = true;
         public DateTime CreateDate { get; set; }
         public DateTime UpdateDate { get; set; }

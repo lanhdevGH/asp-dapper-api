@@ -187,3 +187,9 @@ go
 alter table [ExtendAttributes]
 alter column [DataType] nvarchar(50)
 go
+
+RENAME TABLE Categories TO Categorys
+go
+
+EXEC sp_rename 'Categories', 'Categorys'
+go

@@ -18,7 +18,7 @@ namespace WebApiDapper.DTOs.ProductDTO
         [Required(ErrorMessage = "Image is require")]
         public string ImageUrl { get; set; }
         public string ImageList { get; set; } = "";
-        public int? CategoryId { get; set; } = null;
+        public int CategoryId { get; set; }
         public Dictionary<string, string>? ExtendAttributes { get; set; }
     }
 }

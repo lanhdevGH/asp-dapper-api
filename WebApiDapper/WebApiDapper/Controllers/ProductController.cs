@@ -61,7 +61,6 @@ namespace WebApiDapper.Controllers
             if (existingProduct == null)
                 return NotFound();
             existingProduct.Name = product.Name;
-            existingProduct.CategoryId = null;
             await _productService.UpdateProduct(existingProduct.Id, product);
             return NoContent();
         }

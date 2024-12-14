@@ -4,11 +4,11 @@ using WebApiDapper.IRepositories;
 
 namespace WebApiDapper.Services
 {
-    public class ExtendAttributeService<K>
+    public class ExtendAttributeService
     {
-        private readonly IExtendAttributeRepository<K> _attributeRepository;
+        private readonly IExtendAttributeRepository<int> _attributeRepository;
 
-        public ExtendAttributeService(IExtendAttributeRepository<K> attributeRepository)
+        public ExtendAttributeService(IExtendAttributeRepository<int> attributeRepository)
         {
             _attributeRepository = attributeRepository;
         }
@@ -25,7 +25,7 @@ namespace WebApiDapper.Services
             return result;
         }
 
-        public async Task<ExtendAttribute?> GetExtendAttributeByIdAsync(K id)
+        public async Task<ExtendAttribute?> GetExtendAttributeByIdAsync(int id)
         {
             return await _attributeRepository.GetByIdAsync(id);
         }
@@ -36,7 +36,7 @@ namespace WebApiDapper.Services
             return result;
         }
 
-        public async Task<K?> CreateExtendAttribute(ExtendAttributeCreateRequestDTO extendAttributeDTO)
+        public async Task<int?> CreateExtendAttribute(ExtendAttributeCreateRequestDTO extendAttributeDTO)
         {
             var extendAttribute = new ExtendAttribute()
             {

@@ -1,5 +1,4 @@
-﻿
-using Dapper;
+﻿using Dapper;
 using System.Text;
 using WebApiDapper.DbContext;
 
@@ -33,7 +32,7 @@ namespace WebApiDapper.IRepositories.Impl
             }
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(K id)
         {
             var query = $"DELETE FROM {_tableName} WHERE Id = @Id";
 
@@ -84,7 +83,7 @@ namespace WebApiDapper.IRepositories.Impl
 
         public async Task UpdateAsync(T entity)
         {
-            var updateQuery = GenerateUpdateQuery(["Id"]);
+            var updateQuery = GenerateUpdateQuery(["Id", "CreateDate"]);
 
             using (var connection = _dbContext.CreateConnection())
             {

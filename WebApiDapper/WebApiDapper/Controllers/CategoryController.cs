@@ -1,0 +1,86 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using WebApiDapper.ActionFilters;
+using WebApiDapper.DTOs.CategoryDTO;
+using WebApiDapper.Entities;
+using WebApiDapper.Services;
+
+namespace WebApiDapper.Controllers
+{
+    [ApiController]
+    [Route("[controller]")]
+    public class CategoryController : Controller
+    {
+        private CategoryService _categoryService { get; set; }
+
+        public CategoryController(CategoryService categoryService)
+        {
+            _categoryService = categoryService;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllCategory()
+        {
+            var categorys = await _categoryService.GetAllCategory();
+            return Ok(categorys);
+        }
+
+        //[HttpGet("page")]
+        //[ExceptionHandleFilter]
+        //public async Task<IActionResult> GetcategoryByPaging([FromQuery] int pageNumber, [FromQuery] int pageSize)
+        //{
+        //    var categorys = await _categoryRepo.GetPagingAsync(pageNumber, pageSize);
+        //    return Ok(categorys);
+        //}
+
+        [HttpGet("id")]
+        [ServiceFilter(typeof(ValidationNotExistEntityAttribute<Category, int>))]
+        public IActionResult GetcategoryById(int id)
+        {
+            var category = HttpContext.Items["Entity"] as Category;
+            if (category == null)
+            {
+                return NotFound();
+            }
+            return Ok(category);
+        }
+
+        [HttpPost]
+        [ServiceFilter(typeof(ValidationIsExistEntity<CategoryRequestDTO>))]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<IActionResult> Createcategory([FromBody] CategoryRequestDTO category)
+        {
+            var categoryId = await _categoryService.CreateCategory(category);
+            return CreatedAtAction(nameof(GetcategoryById), categoryId);
+        }
+
+        [HttpPut("id")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        [ServiceFilter(typeof(ValidationNotExistEntityAttribute<Category, int>))]
+        public async Task<IActionResult> Updatecategory(int id, [FromBody] CategoryRequestDTO categoryRequest)
+        {
+            var existingcategory = HttpContext.Items["Entity"] as Category;
+            if (existingcategory == null)
+                return NotFound();
+            existingcategory.Name = categoryRequest.Name;
+            existingcategory.SeoAlias = categoryRequest.SeoAlias;
+            existingcategory.SeoDescription = categoryRequest.SeoDescription;
+            existingcategory.SeoKeyword = categoryRequest.SeoKeyword;
+            existingcategory.SeoTitle = categoryRequest.SeoTitle;
+            existingcategory.IsActive = categoryRequest.IsActive;
+            existingcategory.ParentId = categoryRequest.ParentId;
+            existingcategory.UpdateDate = DateTime.Now;
+            await _categoryService.UpdateCategory(existingcategory);
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        [ServiceFilter(typeof(ValidationNotExistEntityAttribute<Category, int>))]
+        public async Task<IActionResult> Deletecategory(int id)
+        {
+            var category = HttpContext.Items["Entity"] as Category;
+            if (category == null) return NotFound();
+            await _categoryService.DeleteCategory(category.Id);
+            return NoContent();
+        }
+    }
+}

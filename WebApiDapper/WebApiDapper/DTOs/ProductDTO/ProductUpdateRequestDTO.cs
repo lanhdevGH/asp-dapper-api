@@ -23,7 +23,7 @@ namespace WebApiDapper.DTOs.ProductDTO
         public int RateTotal { get; set; } = 0;
         public int RateCount { get; set; } = 0;
         public bool IsActive { get; set; } = true;
-        public int? CategoryId { get; set; } = null;
+        public int CategoryId { get; set; }
         public DateTime CreateDate { get; set; }
         public DateTime UpdateDate { get; set; }
         public Dictionary<string, string>? ExtendAttributes { get; set; }

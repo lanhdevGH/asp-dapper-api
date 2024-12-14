@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using WebApiDapper.DTOs.CategoryDTO;
 
 namespace WebApiDapper.DTOs.ProductDTO
 {
@@ -25,7 +26,7 @@ namespace WebApiDapper.DTOs.ProductDTO
         public int RateTotal { get; set; } = 0;
         public int RateCount { get; set; } = 0;
         public bool IsActive { get; set; } = true;
-        public int? CategoryId { get; set; }
+        public CategoryResponseDTO? Category { get; set; } = null;
         public DateTime CreateDate { get; set; }
         public DateTime UpdateDate { get; set; }
 

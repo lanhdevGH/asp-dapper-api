@@ -6,12 +6,12 @@ using WebApiDapper.Services;
 
 namespace WebApiDapper.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class ExtendAttributeController : ControllerBase
     {
-        private readonly ExtendAttributeService<int> _extendAttributeService;
-        public ExtendAttributeController(ExtendAttributeService<int> extendAttributeService)
+        private readonly ExtendAttributeService _extendAttributeService;
+        public ExtendAttributeController(ExtendAttributeService extendAttributeService)
         {
             _extendAttributeService = extendAttributeService;
         }

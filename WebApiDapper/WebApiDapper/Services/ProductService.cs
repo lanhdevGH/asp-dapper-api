@@ -6,6 +6,7 @@ namespace WebApiDapper.Services
 {
     public class ProductService
     {
+        private readonly CategoryService _categoryService;
         private readonly IProductRepository<int> _productRepository;
         private readonly IExtendAttributeRepository<int> _attributeRepository;
         private readonly IAttributeValueNVarcharRepository<int> _attributeValueNVarchar;
@@ -15,6 +16,7 @@ namespace WebApiDapper.Services
         private readonly IAttributeValueDateTimeRepository<int> _attributeValueDateTime;
 
         public ProductService(IProductRepository<int> productRepository,
+            CategoryService categoryService,
             IExtendAttributeRepository<int> attributeRepository,
             IAttributeValueNVarcharRepository<int> attributeValueNVarcharRepository,
             IAttributeValueTextRepository<int> attributeValueTextRepository,
@@ -22,6 +24,7 @@ namespace WebApiDapper.Services
             IAttributeValueDecimalRepository<int> attributeValueDecimalRepository,
             IAttributeValueDateTimeRepository<int> attributeValueDateTimeRepository)
         {
+            _categoryService = categoryService;
             _attributeRepository = attributeRepository;
             _productRepository = productRepository;
             _attributeValueNVarchar = attributeValueNVarcharRepository;
@@ -75,7 +78,6 @@ namespace WebApiDapper.Services
                     ImageUrl = prd.ImageUrl,
                     ImageList = prd.ImageList,
                     RateTotal = prd.RateTotal,
-                    CategoryId = prd.CategoryId,
                     CreateDate = prd.CreateDate,
                     UpdateDate = prd.UpdateDate,
                     Sku = prd.Sku,
@@ -83,7 +85,7 @@ namespace WebApiDapper.Services
                     IsActive = prd.IsActive,
                     RateCount = prd.RateCount
                 };
-
+                product.Category = await _categoryService.GetCategoryByIdAsync(prd.CategoryId);
                 product.ExtendAttributes = await GetExtendAttributeProductAsync(prd.Id);
                 result.Add(product);
             }
@@ -103,7 +105,7 @@ namespace WebApiDapper.Services
             result.ImageUrl = product.ImageUrl;
             result.ImageList = product.ImageList;
             result.RateTotal = product.RateTotal;
-            result.CategoryId = product.CategoryId;
+            result.Category = await _categoryService.GetCategoryByIdAsync(product.CategoryId);
             result.CreateDate = product.CreateDate;
             result.UpdateDate = product.UpdateDate;
             result.Sku = product.Sku;
