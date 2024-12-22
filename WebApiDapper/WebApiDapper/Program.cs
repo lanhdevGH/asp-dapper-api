@@ -1,5 +1,8 @@
+using Microsoft.AspNetCore.Identity;
 using Serilog;
 using Serilog.Formatting.Json;
+using WebAPICoreDapper.Data;
+using WebAPICoreDapper.Models;
 using WebApiDapper.ActionFilters;
 using WebApiDapper.DbContext;
 using WebApiDapper.Entities;
@@ -25,6 +28,19 @@ try
     builder.Services.AddSwaggerGen();
     //
     builder.Services.AddSingleton<DapperDBContext>();
+    // Add Identity
+    builder.Services.AddTransient<IUserStore<AppUser>,UserStore>();
+    builder.Services.AddTransient<IRoleStore<AppRole>,RoleStore>();
+    builder.Services.AddIdentity<AppUser, AppRole>().AddDefaultTokenProviders();
+    builder.Services.Configure<IdentityOptions>(options => {
+        // Default Password settings.
+        options.Password.RequireDigit = true;
+        options.Password.RequireLowercase = false;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequireUppercase = false;
+        options.Password.RequiredLength = 6;
+        options.Password.RequiredUniqueChars = 1;
+    });
     // Add Repository
     builder.Services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
     builder.Services.AddScoped(typeof(IProductRepository<>), typeof(ProductRepository<>));
@@ -39,8 +55,7 @@ try
     builder.Services.AddScoped<ProductService>();
     builder.Services.AddScoped<CategoryService>();
     builder.Services.AddScoped<ExtendAttributeService>();
-
-    //
+    // Add Validation
     builder.Services.AddScoped<ValidationFilterAttribute>();
     builder.Services.AddScoped(typeof(ValidationIsExistEntity<>));
     builder.Services.AddScoped(typeof(ValidationNotExistEntityAttribute<,>));
