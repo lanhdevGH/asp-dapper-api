@@ -52,6 +52,7 @@ try
     builder.Services.AddScoped(typeof(IAttributeValueDecimalRepository<>), typeof(AttributeValueDecimalRepository<>));
     builder.Services.AddScoped(typeof(IAttributeValueDateTimeRepository<>), typeof(AttributeValueDateTimeRepository<>));
     // Add service
+    builder.Services.AddScoped<RoleService>();
     builder.Services.AddScoped<ProductService>();
     builder.Services.AddScoped<CategoryService>();
     builder.Services.AddScoped<ExtendAttributeService>();
