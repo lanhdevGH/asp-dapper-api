@@ -7,21 +7,21 @@ namespace WebAPICoreDapper.Models
 {
     public class AppUser
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
-        public string UserName { get; set; }
+        public string UserName { get; set; } = string.Empty;
 
-        public string NormalizedUserName { get; set; }
+        public string NormalizedUserName { get; set; } = string.Empty;
 
-        public string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
 
-        public string NormalizedEmail { get; set; }
+        public string NormalizedEmail { get; set; } = string.Empty;
 
         public bool EmailConfirmed { get; set; }
 
-        public string PasswordHash { get; set; }
+        public string PasswordHash { get; set; } = string.Empty;
 
-        public string PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; } = string.Empty;
 
         public bool PhoneNumberConfirmed { get; set; }
 
@@ -29,9 +29,9 @@ namespace WebAPICoreDapper.Models
 
         public bool LockoutEnabled { set; get; }
 
-        public string FullName { get; set; }
+        public string FullName { get; set; } = string.Empty;
 
-        public string Adress { get; set; }
+        public string Address { get; set; } = string.Empty;
 
         public int AccessFailedCount { get; set; }
     }

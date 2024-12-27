@@ -1,28 +1,25 @@
-﻿using Dapper;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.AspNetCore.Mvc;
 using WebAPICoreDapper.Models;
 using WebApiDapper.ActionFilters;
+using WebApiDapper.DTOs.UserDTO;
 using WebApiDapper.Services;
 
 namespace WebApiDapper.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class RoleController : ControllerBase
+    public class UserController : ControllerBase
     {
-        private readonly RoleService _roleService;
-        public RoleController(RoleService roleService)
+        private readonly UserService _userService;
+        public UserController(UserService userService)
         {
-            _roleService = roleService;
+            _userService = userService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllRole()
+        public async Task<IActionResult> GetAllUser()
         {
-            var roles = await _roleService.GetAllRole();
+            var roles = await _userService.GetAllUser();
             return Ok(roles);
         }
 
@@ -57,9 +54,9 @@ namespace WebApiDapper.Controllers
         //}
 
         [HttpGet("id")]
-        public async Task<IActionResult> GetRoleById(Guid id)
+        public async Task<IActionResult> GetUserById(Guid id)
         {
-            var role = await _roleService.GetRoleById(id.ToString());
+            var role = await _userService.GetUserById(id.ToString());
             if (role == null)
             {
                 return NotFound();
@@ -68,20 +65,21 @@ namespace WebApiDapper.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateRole([FromBody] AppRole role)
+        public async Task<IActionResult> CreateUser([FromBody] UserRequestDTO userRequest)
         {
-            var result = await _roleService.CreateRole(role);
+            var result = await _userService.CreateUser(userRequest);
             if (result.Succeeded)
             {
-                return CreatedAtAction(nameof(GetRoleById), new { id = role.Id }, role);
+                //return CreatedAtAction(nameof(GetUserById), new { id = result.Id.ToString() }, result);
+                return Ok();
             }
             return BadRequest(result.Errors);
         }
 
         [HttpPut("id")]
-        public async Task<IActionResult> UpdateRole(Guid id, [FromBody] AppRole role)
+        public async Task<IActionResult> UpdateRole(Guid id, [FromBody] UserUpdateDTO userRequest)
         {
-            var result = await _roleService.UpdateRole(id, role);
+            var result = await _userService.UpdateUser(id, userRequest);
             if (result.Succeeded)
             {
                 return NoContent();
@@ -93,7 +91,7 @@ namespace WebApiDapper.Controllers
         [ServiceFilter(typeof(ValidationIsExistEntity<AppRole>))]
         public async Task<IActionResult> DeleteRole(Guid id)
         {
-            var result = await _roleService.DeleteRole(id.ToString());
+            var result = await _userService.DeleteUser(id.ToString());
             if (result.Succeeded)
             {
                 return NoContent();

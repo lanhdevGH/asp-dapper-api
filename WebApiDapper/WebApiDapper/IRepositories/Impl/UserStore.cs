@@ -1,12 +1,5 @@
 ﻿using Dapper;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using WebAPICoreDapper.Models;
 using WebApiDapper.DbContext;
 
@@ -32,10 +25,10 @@ namespace WebAPICoreDapper.Data
             {
                 user.Id = Guid.NewGuid();
                 await connection.ExecuteAsync($@"INSERT INTO [AspNetUsers] ([Id],[UserName], [NormalizedUserName], [Email],
-                    [NormalizedEmail], [EmailConfirmed], [PasswordHash], [PhoneNumber], [PhoneNumberConfirmed], [TwoFactorEnabled],[LockoutEnabled],[AccessFailedCount])
+                    [NormalizedEmail], [EmailConfirmed], [PasswordHash], [PhoneNumber], [PhoneNumberConfirmed], [TwoFactorEnabled],[LockoutEnabled],[AccessFailedCount], [FullName], [Address])
                     VALUES (@{nameof(AppUser.Id)},@{nameof(AppUser.UserName)}, @{nameof(AppUser.NormalizedUserName)}, @{nameof(AppUser.Email)},
                     @{nameof(AppUser.NormalizedEmail)}, @{nameof(AppUser.EmailConfirmed)}, @{nameof(AppUser.PasswordHash)},
-                    @{nameof(AppUser.PhoneNumber)}, @{nameof(AppUser.PhoneNumberConfirmed)}, @{nameof(AppUser.TwoFactorEnabled)},@{nameof(AppUser.LockoutEnabled)},@{nameof(AppUser.AccessFailedCount)});", user);
+                    @{nameof(AppUser.PhoneNumber)}, @{nameof(AppUser.PhoneNumberConfirmed)}, @{nameof(AppUser.TwoFactorEnabled)},@{nameof(AppUser.LockoutEnabled)},@{nameof(AppUser.AccessFailedCount)}, @{nameof(AppUser.FullName)},@{nameof(AppUser.Address)});", user);
             }
 
             return IdentityResult.Success;

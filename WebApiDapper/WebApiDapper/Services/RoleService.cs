@@ -28,9 +28,9 @@ namespace WebApiDapper.Services
             return result;
         }
 
-        public async Task<AppRole?> GetRoleById(Guid id)
+        public async Task<AppRole?> GetRoleById(string id)
         {
-            return await _roleManager.FindByIdAsync(id.ToString());
+            return await _roleManager.FindByIdAsync(id);
         }
 
         public async Task<IdentityResult> CreateRole(AppRole role)

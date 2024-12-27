@@ -5,10 +5,10 @@ using WebAPICoreDapper.Data;
 using WebAPICoreDapper.Models;
 using WebApiDapper.ActionFilters;
 using WebApiDapper.DbContext;
-using WebApiDapper.Entities;
 using WebApiDapper.ExceptionFilters;
 using WebApiDapper.IRepositories;
 using WebApiDapper.IRepositories.Impl;
+using WebApiDapper.ProfileMapper;
 using WebApiDapper.Services;
 
 Log.Logger = new LoggerConfiguration()
@@ -21,12 +21,12 @@ try
     var builder = WebApplication.CreateBuilder(args);
 
     // Add services to the container.
-
     builder.Services.AddControllers();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
     //
+    builder.Services.AddAutoMapper(typeof(MappingProfile));
     builder.Services.AddSingleton<DapperDBContext>();
     // Add Identity
     builder.Services.AddTransient<IUserStore<AppUser>,UserStore>();
@@ -53,6 +53,7 @@ try
     builder.Services.AddScoped(typeof(IAttributeValueDateTimeRepository<>), typeof(AttributeValueDateTimeRepository<>));
     // Add service
     builder.Services.AddScoped<RoleService>();
+    builder.Services.AddScoped<UserService>();
     builder.Services.AddScoped<ProductService>();
     builder.Services.AddScoped<CategoryService>();
     builder.Services.AddScoped<ExtendAttributeService>();

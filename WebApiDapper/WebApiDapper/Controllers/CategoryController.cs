@@ -61,15 +61,7 @@ namespace WebApiDapper.Controllers
             var existingcategory = HttpContext.Items["Entity"] as Category;
             if (existingcategory == null)
                 return NotFound();
-            existingcategory.Name = categoryRequest.Name;
-            existingcategory.SeoAlias = categoryRequest.SeoAlias;
-            existingcategory.SeoDescription = categoryRequest.SeoDescription;
-            existingcategory.SeoKeyword = categoryRequest.SeoKeyword;
-            existingcategory.SeoTitle = categoryRequest.SeoTitle;
-            existingcategory.IsActive = categoryRequest.IsActive;
-            existingcategory.ParentId = categoryRequest.ParentId;
-            existingcategory.UpdateDate = DateTime.Now;
-            await _categoryService.UpdateCategory(existingcategory);
+            await _categoryService.UpdateCategory(categoryRequest, existingcategory);
             return NoContent();
         }
 
