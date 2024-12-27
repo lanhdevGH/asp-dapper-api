@@ -8,7 +8,5 @@ namespace WebApiDapper.IRepositories.Impl
         public CategoryRepository(DapperDBContext context) : base(context)
         {
         }
-
-
     }
 }

@@ -5,6 +5,7 @@
         public Task<List<T>> GetAllAsync();
         public Task<T?> GetByIdAsync(K id);
         public Task<K?> AddAsync(T entity);
+        public Task<K?> AddWithIdAsync(T entity);
         public Task UpdateAsync(T entity);
         public Task DeleteAsync(K id);
         public Task<List<T>> GetPagingAsync(int pageNumber, int pageSize);

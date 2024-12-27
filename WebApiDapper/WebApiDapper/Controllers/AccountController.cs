@@ -1,13 +1,19 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Dapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
 using System.Security.Claims;
 using System.Text;
+using WebAPICoreDapper.Constants;
 using WebAPICoreDapper.Models;
 using WebApiDapper.ActionFilters;
+using WebApiDapper.DbContext;
 using WebApiDapper.DTOs.Login;
 
 namespace WebApiDapper.Controllers
@@ -20,14 +26,17 @@ namespace WebApiDapper.Controllers
         private readonly IConfiguration _configuration;
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly DapperDBContext _dbContext;
 
         public AccountController(IConfiguration configuration,
                                  UserManager<AppUser> userManager,
-                                 SignInManager<AppUser> signInManager)
+                                 SignInManager<AppUser> signInManager,
+                                 DapperDBContext dbContext)
         {
             _configuration = configuration;
             _userManager = userManager;
             _signInManager = signInManager;
+            _dbContext = dbContext;
         }
 
         [Route("Login")]
@@ -42,24 +51,22 @@ namespace WebApiDapper.Controllers
                 var result = await _signInManager.PasswordSignInAsync(loginData.UserName, loginData.Password, false, true);
                 if (!result.Succeeded) return BadRequest("Mật khẩu không đúng");
                 var roleUser = _userManager.GetRolesAsync(user);
-                //var claim = new[]
-                //{
-                //    //new Claim("Email", user.Email),
-                //    //new Claim(ClaimTypes.NameIdentifier, user.UserName),
-                //    //new Claim(SystemConstants.UserClaim.Id, user.Id.ToString()),
-                //    //new Claim(ClaimTypes.Name, user.UserName),
-                //    //new Claim(SystemConstants.UserClaim.FullName, user.FullName),
-                //    //new Claim(SystemConstants.UserClaim.Avatar, string.IsNullOrEmpty(user.Avatar) ? string.Empty : user.Avatar),
-                //    //new Claim(SystemConstants.UserClaim.Roles, string.Join(";", roles)),
-                //    //new Claim(SystemConstants.UserClaim.Permissions, JsonConvert.SerializeObject(permissions)),
-                //    //new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-                //};
+                var permissions = await GetPermissionByUserId(user.Id.ToString());
+                var claim = new[]
+                {
+                    new Claim(SystemConstants.UserClaim.Id, user.Id.ToString()),
+                    new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(SystemConstants.UserClaim.FullName, user.FullName??string.Empty),
+                    new Claim(SystemConstants.UserClaim.Roles, string.Join(";", roles)),
+                    new Claim(SystemConstants.UserClaim.Permissions, JsonConvert.SerializeObject(permissions)),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                };
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Tokens:Key"]));
                 var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
                 var token = new JwtSecurityToken(_configuration["Tokens:Issuer"],
                     _configuration["Tokens:Issuer"],
-                     //claim,
+                     claim,
                     expires: DateTime.Now.AddHours(2),
                     signingCredentials: creds);
 
@@ -91,6 +98,18 @@ namespace WebApiDapper.Controllers
             }
 
             return BadRequest();
+        }
+
+        private async Task<List<string>> GetPermissionByUserId(string userId)
+        {
+            using (var conn = _dbContext.CreateConnection())
+            {
+                var paramaters = new DynamicParameters();
+                paramaters.Add("@userId", userId);
+
+                var result = await conn.QueryAsync<string>("Get_Permission_ByUserId", paramaters, null, null, System.Data.CommandType.StoredProcedure);
+                return result.ToList();
+            }
         }
     }
 }

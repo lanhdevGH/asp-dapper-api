@@ -32,6 +32,17 @@ namespace WebApiDapper.IRepositories.Impl
             }
         }
 
+        public async Task<K?> AddWithIdAsync(T entity)
+        {
+            var insertQuery = GenerateInsertQuery([]);
+
+            using (var connection = _dbContext.CreateConnection())
+            {
+                var insertId = await connection.ExecuteScalarAsync<K>(insertQuery, entity);
+                return insertId;
+            }
+        }
+
         public async Task DeleteAsync(K id)
         {
             var query = $"DELETE FROM {_tableName} WHERE Id = @Id";

@@ -44,7 +44,9 @@ try
     // Add Repository
     builder.Services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
     builder.Services.AddScoped(typeof(IProductRepository<>), typeof(ProductRepository<>));
+    builder.Services.AddScoped(typeof(IFunctionRepository<>), typeof(FunctionRepository<>));
     builder.Services.AddScoped(typeof(ICategoryRepository<>), typeof(CategoryRepository<>));
+    builder.Services.AddScoped(typeof(IFunctionRepository<>), typeof(FunctionRepository<>));
     builder.Services.AddScoped(typeof(IExtendAttributeRepository<>), typeof(ExtendAttributeRepository<>));
     builder.Services.AddScoped(typeof(IAttributeValueNVarcharRepository<>), typeof(AttributeValueNVarcharRepository<>));
     builder.Services.AddScoped(typeof(IAttributeValueTextRepository<>), typeof(AttributeValueTextRepository<>));
@@ -54,6 +56,7 @@ try
     // Add service
     builder.Services.AddScoped<RoleService>();
     builder.Services.AddScoped<UserService>();
+    builder.Services.AddScoped<FunctionService>();
     builder.Services.AddScoped<ProductService>();
     builder.Services.AddScoped<CategoryService>();
     builder.Services.AddScoped<ExtendAttributeService>();

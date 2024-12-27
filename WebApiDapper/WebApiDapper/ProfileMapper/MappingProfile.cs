@@ -2,6 +2,7 @@
 using WebAPICoreDapper.Models;
 using WebApiDapper.DTOs.CategoryDTO;
 using WebApiDapper.DTOs.ExtendAttribute;
+using WebApiDapper.DTOs.FunctionDTO;
 using WebApiDapper.DTOs.ProductDTO;
 using WebApiDapper.DTOs.UserDTO;
 using WebApiDapper.Entities;
@@ -25,6 +26,9 @@ namespace WebApiDapper.ProfileMapper
             CreateMap<UserRequestDTO, AppUser>();
             CreateMap<UserUpdateDTO, AppUser>();
             CreateMap<AppUser, UserResponseDTO>();
+            // Function
+            CreateMap<FunctionRequestDTO, Function>();
+            CreateMap<Function, FunctionResponseDTO>();
         }
     }
 }
