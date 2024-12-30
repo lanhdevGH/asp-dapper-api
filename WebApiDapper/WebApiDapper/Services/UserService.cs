@@ -40,6 +40,7 @@ namespace WebApiDapper.Services
         public async Task<IdentityResult> CreateUser(UserRequestDTO userRequestDTO)
         {
             var user = _mapper.Map<AppUser>(userRequestDTO);
+            user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, userRequestDTO.Password);
             return await _userManager.CreateAsync(user);
         }
 

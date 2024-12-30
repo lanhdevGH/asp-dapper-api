@@ -51,6 +51,7 @@ namespace WebApiDapper.Controllers
                 var result = await _signInManager.PasswordSignInAsync(loginData.UserName, loginData.Password, false, true);
                 if (!result.Succeeded) return BadRequest("Mật khẩu không đúng");
                 var roleUser = _userManager.GetRolesAsync(user);
+                var roles = await _userManager.GetRolesAsync(user);
                 var permissions = await GetPermissionByUserId(user.Id.ToString());
                 var claim = new[]
                 {

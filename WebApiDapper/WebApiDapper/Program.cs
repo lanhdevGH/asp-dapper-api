@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using Serilog;
 using Serilog.Formatting.Json;
+using System.ComponentModel;
 using WebAPICoreDapper.Data;
 using WebAPICoreDapper.Models;
 using WebApiDapper.ActionFilters;
@@ -17,22 +19,51 @@ Log.Logger = new LoggerConfiguration()
 
 try
 {
-    Log.Information("Starting web host. This is object: {0}", new {name = "thanh lanh"});
+    Log.Information("Starting web host. This is object: {0}", new { name = "thanh lanh" });
     var builder = WebApplication.CreateBuilder(args);
 
     // Add services to the container.
     builder.Services.AddControllers();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen();
+    builder.Services.AddSwaggerGen(options =>
+    {
+        // Cấu hình để hỗ trợ Bearer Authentication
+        options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+        {
+            Name = "Authorization",
+            Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+            Scheme = "bearer",
+            BearerFormat = "JWT",
+            In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+            Description = "Nhập 'Bearer' [khoảng trắng] và token của bạn trong ô bên dưới.\n\nVí dụ: Bearer abc123"
+        });
+
+        options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+        {
+            {
+                new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                {
+                    Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                    {
+                        Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                new string[] { }
+            }
+        });
+    });
+
     //
     builder.Services.AddAutoMapper(typeof(MappingProfile));
     builder.Services.AddSingleton<DapperDBContext>();
     // Add Identity
-    builder.Services.AddTransient<IUserStore<AppUser>,UserStore>();
-    builder.Services.AddTransient<IRoleStore<AppRole>,RoleStore>();
+    builder.Services.AddTransient<IUserStore<AppUser>, UserStore>();
+    builder.Services.AddTransient<IRoleStore<AppRole>, RoleStore>();
     builder.Services.AddIdentity<AppUser, AppRole>().AddDefaultTokenProviders();
-    builder.Services.Configure<IdentityOptions>(options => {
+    builder.Services.Configure<IdentityOptions>(options =>
+    {
         // Default Password settings.
         options.Password.RequireDigit = true;
         options.Password.RequireLowercase = false;
@@ -57,6 +88,7 @@ try
     builder.Services.AddScoped<RoleService>();
     builder.Services.AddScoped<UserService>();
     builder.Services.AddScoped<FunctionService>();
+    builder.Services.AddScoped<PermissionService>();
     builder.Services.AddScoped<ProductService>();
     builder.Services.AddScoped<CategoryService>();
     builder.Services.AddScoped<ExtendAttributeService>();
@@ -72,8 +104,22 @@ try
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
     {
-        app.UseSwagger();
-        app.UseSwaggerUI();
+        app.UseSwagger(c =>
+        {
+            c.PreSerializeFilters.Add((document, request) =>
+            {
+                var paths = document.Paths.ToDictionary(item => item.Key.ToLowerInvariant(), item => item.Value);
+                document.Paths.Clear();
+                foreach (var pathItem in paths)
+                {
+                    document.Paths.Add(pathItem.Key, pathItem.Value);
+                }
+            });
+        });
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "REST API V1");
+        });
     }
 
     app.ConfigureExceptionHandler();

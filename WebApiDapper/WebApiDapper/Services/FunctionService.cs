@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using WebAPICoreDapper.Models;
+using WebAPICoreDapper.ViewModels;
 using WebApiDapper.DTOs.FunctionDTO;
 using WebApiDapper.IRepositories;
 
@@ -50,6 +51,12 @@ namespace WebApiDapper.Services
             var result = await _functionRepository.GetByIdAsync(id);
             _mapper.Map(functionRequestDTO, result);
             await _functionRepository.UpdateAsync(result);
+        }
+
+        public async Task<List<FunctionActionViewModel>> GetFunctionWithAction()
+        {
+            var result = await _functionRepository.GetFunctionWithAction();
+            return result;
         }
     }
 }
