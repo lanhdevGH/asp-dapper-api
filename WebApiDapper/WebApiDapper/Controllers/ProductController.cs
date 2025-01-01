@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WebApiDapper.ActionFilters;
 using WebApiDapper.DTOs.ProductDTO;
 using WebApiDapper.Entities;
+using WebApiDapper.Filter.ActionFilters;
 using WebApiDapper.Services;
 
 namespace WebApiDapper.Controllers

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using WebApiDapper.IRepositories;
 
-namespace WebApiDapper.ActionFilters
+namespace WebApiDapper.Filter.ActionFilters
 {
     public class ValidationIsExistEntity<T> : IAsyncActionFilter where T : class
     {

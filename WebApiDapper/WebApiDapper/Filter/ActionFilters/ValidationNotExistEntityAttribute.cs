@@ -5,7 +5,7 @@ using WebApiDapper.DbContext;
 using WebApiDapper.IRepositories;
 using WebApiDapper.IRepositories.Impl;
 
-namespace WebApiDapper.ActionFilters
+namespace WebApiDapper.Filter.ActionFilters
 {
     public class ValidationNotExistEntityAttribute<T, K> : IAsyncActionFilter where T : class
     {

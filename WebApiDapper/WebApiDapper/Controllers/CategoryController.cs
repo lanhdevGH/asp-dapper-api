@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WebApiDapper.ActionFilters;
 using WebApiDapper.DTOs.CategoryDTO;
 using WebApiDapper.Entities;
+using WebApiDapper.Filter.ActionFilters;
+using WebApiDapper.Filter.Auth;
 using WebApiDapper.Services;
 
 namespace WebApiDapper.Controllers
@@ -18,6 +19,7 @@ namespace WebApiDapper.Controllers
         }
 
         [HttpGet]
+        [ClaimRequirementFilter(Enums.FunctionCode.SYSTEM_USER, Enums.ActionCode.VIEW)]
         public async Task<IActionResult> GetAllCategory()
         {
             var categorys = await _categoryService.GetAllCategory();

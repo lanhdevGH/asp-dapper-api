@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using WebApiDapper.Contracts;
 
-namespace WebApiDapper.ActionFilters
+namespace WebApiDapper.Filter.ActionFilters
 {
     public class ValidationFilterAttribute : IActionFilter
     {

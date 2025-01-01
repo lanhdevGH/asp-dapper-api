@@ -11,8 +11,8 @@ namespace WebAPICoreDapper.Constants
         {
             public const string Roles = "Roles";
             public const string Id = "Id";
-            public const string Permissions = "permissions";
-            public const string FullName = "fullName";
+            public const string Permissions = "Permissions";
+            public const string FullName = "FullName";
         }
     }
 }

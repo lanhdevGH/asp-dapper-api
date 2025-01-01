@@ -12,9 +12,9 @@ using System.Security.Claims;
 using System.Text;
 using WebAPICoreDapper.Constants;
 using WebAPICoreDapper.Models;
-using WebApiDapper.ActionFilters;
 using WebApiDapper.DbContext;
 using WebApiDapper.DTOs.Login;
+using WebApiDapper.Filter.ActionFilters;
 
 namespace WebApiDapper.Controllers
 {
@@ -58,8 +58,10 @@ namespace WebApiDapper.Controllers
                     new Claim(SystemConstants.UserClaim.Id, user.Id.ToString()),
                     new Claim(ClaimTypes.Name, user.UserName),
                     new Claim(SystemConstants.UserClaim.FullName, user.FullName??string.Empty),
-                    new Claim(SystemConstants.UserClaim.Roles, string.Join(";", roles)),
-                    new Claim(SystemConstants.UserClaim.Permissions, JsonConvert.SerializeObject(permissions)),
+                    //new Claim(SystemConstants.UserClaim.Roles, string.Join(";", roles)),
+                    //new Claim(SystemConstants.UserClaim.Permissions, JsonConvert.SerializeObject(permissions)),
+                    new Claim(SystemConstants.UserClaim.Roles, "Admin"),
+                    new Claim(SystemConstants.UserClaim.Permissions, "SYSTEM_ADMIN"),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
                 };
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Tokens:Key"]));

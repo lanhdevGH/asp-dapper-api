@@ -1,13 +1,17 @@
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using Serilog.Formatting.Json;
-using System.ComponentModel;
+using System.Text;
 using WebAPICoreDapper.Data;
 using WebAPICoreDapper.Models;
-using WebApiDapper.ActionFilters;
 using WebApiDapper.DbContext;
+using WebApiDapper.DTOs.ExtendAttribute;
 using WebApiDapper.ExceptionFilters;
+using WebApiDapper.Filter.ActionFilters;
+using WebApiDapper.Filter.Auth;
 using WebApiDapper.IRepositories;
 using WebApiDapper.IRepositories.Impl;
 using WebApiDapper.ProfileMapper;
@@ -21,11 +25,30 @@ try
 {
     Log.Information("Starting web host. This is object: {0}", new { name = "thanh lanh" });
     var builder = WebApplication.CreateBuilder(args);
-
     // Add services to the container.
     builder.Services.AddControllers();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
+    // Authentication
+    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"], // Định nghĩa trong appsettings.json
+            ValidAudience = builder.Configuration["Jwt:Audience"], // Định nghĩa trong appsettings.json
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])) // Key bí mật
+        };
+
+        // Đảm bảo mọi claim từ JWT đều được ánh xạ
+        options.MapInboundClaims = false;
+    });
+    builder.Services.AddTransient<IClaimsTransformation, CustomClaimsTransformer>();
+    // Swagger
     builder.Services.AddSwaggerGen(options =>
     {
         // Cấu hình để hỗ trợ Bearer Authentication
@@ -54,7 +77,6 @@ try
             }
         });
     });
-
     //
     builder.Services.AddAutoMapper(typeof(MappingProfile));
     builder.Services.AddSingleton<DapperDBContext>();

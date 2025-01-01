@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using WebAPICoreDapper.Models;
-using WebApiDapper.ActionFilters;
+using WebApiDapper.Filter.ActionFilters;
 using WebApiDapper.Services;
 
 namespace WebApiDapper.Controllers
